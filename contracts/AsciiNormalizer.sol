@@ -47,6 +47,23 @@ contract AsciiNormalizer {
 		return true;
 	}
 
+	function normalize(string memory domain) external view returns (string memory) {
+		for (uint256 i = 0; i < bytes(domain).length; i++) {
+			bytes1 c = bytes(domain)[i];
+			if (c == '.') {
+				continue;
+			}
+
+			require(c < 0x80);
+			bytes1 r = idnamap[uint8(c)];
+			require(r > 0);
+			if (uint8(r) > 1) {
+				bytes(domain)[i] = r;
+			}
+		}
+		return domain;
+	}
+
 	function namehash(string memory domain) external view returns (string memory, bytes32) {
 		uint256 i = bytes(domain).length;
 

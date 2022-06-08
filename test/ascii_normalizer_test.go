@@ -65,7 +65,7 @@ func TestAsciiNormalizer(t *testing.T) {
 				t.Errorf("want valid: %t, got: %t", test.valid, isValid)
 			}
 
-			normalized, node, err := nrm.Namehash(&bind.CallOpts{}, test.domain)
+			normal, node, err := nrm.Namehash(&bind.CallOpts{}, test.domain)
 			if err != nil {
 				if !isValid {
 					// revert is expected
@@ -73,9 +73,8 @@ func TestAsciiNormalizer(t *testing.T) {
 				}
 				t.Fatal(err)
 			}
-
-			if normalized != test.normal {
-				t.Errorf("want normal: %s, got: %s", test.normal, normalized)
+			if normal != test.normal {
+				t.Errorf("want normal: %s, got: %s", test.normal, normal)
 			}
 
 			testNode, err := hex.DecodeString(test.nodeHx)
@@ -84,6 +83,15 @@ func TestAsciiNormalizer(t *testing.T) {
 			}
 			if !bytes.Equal(node[:], testNode) {
 				t.Errorf("want node: %x, got: %x", testNode, node[:])
+			}
+
+			normal, err = nrm.Normalize(&bind.CallOpts{}, test.domain)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if normal != test.normal {
+				t.Errorf("want normal: %s, got: %s", test.normal, normal)
 			}
 		})
 	}
