@@ -31,6 +31,22 @@ contract AsciiNormalizer {
 		}
 	}
 
+	function valid(string calldata domain) external view returns (bool) {
+		for (uint256 i = 0; i < bytes(domain).length; i++) {
+			bytes1 c = bytes(domain)[i];
+			if (c == '.') {
+				continue;
+			}
+			if (c > 0x80) {
+				return false;
+			}
+			if (uint8(idnamap[uint8(c)]) != 1) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	function namehash(string memory domain) external view returns (string memory, bytes32) {
 		uint256 i = bytes(domain).length;
 
