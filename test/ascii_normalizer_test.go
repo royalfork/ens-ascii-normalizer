@@ -14,19 +14,14 @@ import (
 func TestAsciiMap(t *testing.T) {
 	chain, accts := soltest.New()
 
-	_, _, nrm, err := bindings.DeployAsciiNormalizer(accts[0].Auth, chain)
+	rules := AsciiRules()
+	comp := compress(rules)
+
+	_, _, nrm, err := bindings.DeployAsciiNormalizer(accts[0].Auth, chain, rle(comp))
 	if err != nil {
 		t.Fatal(err)
 	}
 	chain.Commit()
-
-	rules := AsciiRules()
-
-	for _, r := range rle(rules) {
-		if !chain.Succeed(nrm.AddRules(accts[0].Auth, [1]byte{r.Rule}, big.NewInt(int64(r.Num)))) {
-			t.Fatal("can't add rule")
-		}
-	}
 
 	for _, rule := range rules {
 		r, err := nrm.Idnamap(&bind.CallOpts{}, big.NewInt(int64(rule.Code)))
@@ -42,20 +37,11 @@ func TestAsciiMap(t *testing.T) {
 func TestAsciiNormalizer(t *testing.T) {
 	chain, accts := soltest.New()
 
-	_, _, nrm, err := bindings.DeployAsciiNormalizer(accts[0].Auth, chain)
+	_, _, nrm, err := bindings.DeployAsciiNormalizer(accts[0].Auth, chain, rle(compress(AsciiRules())))
 	if err != nil {
 		t.Fatal(err)
 	}
 	chain.Commit()
-
-	var totalGas uint64
-	for _, r := range rle(AsciiRules()) {
-		if !chain.Succeed(nrm.AddRules(accts[0].Auth, [1]byte{r.Rule}, big.NewInt(int64(r.Num)))) {
-			t.Fatal("can't add rule")
-		}
-		g := chain.LastGas()
-		totalGas += g
-	}
 
 	for _, test := range []struct {
 		domain string

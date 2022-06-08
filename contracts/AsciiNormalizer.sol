@@ -22,13 +22,16 @@ contract AsciiNormalizer {
 	// TODO inspect actual memory?
 	bytes1[] public idnamap;
 
-	// TODO only owner
-	function addRules(bytes1 r, uint256 num) external {
-		for (uint256 i = 0; i < num; i++) {
-			idnamap.push(r);
+	constructor (bytes memory asciimap) {
+		for(uint i = 0; i < asciimap.length; i += 2) {
+			bytes1 r = asciimap[i+1];
+			for(uint8 j = 0; j < uint8(asciimap[i]); j++) {
+				idnamap.push(r);
+			}
 		}
 	}
 
+	// TODO external vs public?
 	function valid(string calldata domain) external view returns (bool) {
 		for (uint256 i = 0; i < bytes(domain).length; i++) {
 			bytes1 c = bytes(domain)[i];

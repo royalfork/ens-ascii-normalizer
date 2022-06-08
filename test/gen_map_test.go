@@ -89,11 +89,11 @@ func AsciiRules() (out []Record) {
 
 type RLERule struct {
 	Rule byte
-	Num  uint64
+	Num  uint8
 }
 
 // run-length encoding of records
-func rle(records []Record) (out []RLERule) {
+func compress(records []Record) (out []RLERule) {
 	var cur RLERule
 	for _, r := range records {
 		if r.Rule == cur.Rule {
@@ -109,6 +109,14 @@ func rle(records []Record) (out []RLERule) {
 
 	if cur.Num > 0 {
 		out = append(out, cur)
+	}
+	return
+}
+
+// TODO: improve algorithm for better efficiency.
+func rle(rules []RLERule) (out []byte) {
+	for _, rule := range rules {
+		out = append(out, rule.Num, rule.Rule)
 	}
 	return
 }
