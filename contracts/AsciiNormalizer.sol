@@ -2,17 +2,15 @@
 pragma solidity ^0.8.4;
 
 // https://github.com/Arachnid/solidity-stringutils/blob/master/src/strings.sol
-library strings {
-    struct slice {
-        uint _len;
-        uint _ptr;
-    }
-	
-    function keccak(slice memory self) internal pure returns (bytes32 ret) {
-        assembly {
-            ret := keccak256(mload(add(self, 32)), mload(self))
-        }
-    }
+struct slice {
+	uint _len;
+	uint _ptr;
+}
+
+function keccak(slice memory self) pure returns (bytes32 ret) {
+	assembly {
+		ret := keccak256(mload(add(self, 32)), mload(self))
+	}
 }
 
 contract AsciiNormalizer {
@@ -102,6 +100,6 @@ contract AsciiNormalizer {
 		assembly {
 			ptr := add(domain, offset)
 		}
-		return strings.keccak(strings.slice(end-start, ptr));
+		return keccak(slice(end-start, ptr));
 	}
 }
