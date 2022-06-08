@@ -3,7 +3,6 @@ package test
 import (
 	"bytes"
 	"encoding/hex"
-	"fmt"
 	"math/big"
 	"testing"
 
@@ -11,6 +10,34 @@ import (
 	"github.com/royalfork/ens-ascii-normalizer/bindings"
 	"github.com/royalfork/soltest"
 )
+
+func TestAsciiMap(t *testing.T) {
+	chain, accts := soltest.New()
+
+	_, _, nrm, err := bindings.DeployAsciiNormalizer(accts[0].Auth, chain)
+	if err != nil {
+		t.Fatal(err)
+	}
+	chain.Commit()
+
+	rules := AsciiRules()
+
+	for _, r := range rle(rules) {
+		if !chain.Succeed(nrm.AddRules(accts[0].Auth, [1]byte{r.Rule}, big.NewInt(int64(r.Num)))) {
+			t.Fatal("can't add rule")
+		}
+	}
+
+	for _, rule := range rules {
+		r, err := nrm.Idnamap(&bind.CallOpts{}, big.NewInt(int64(rule.Code)))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if r[0] != rule.Rule {
+			t.Errorf("char %x, want rule: %x, got rule: %x", rule.Code, rule.Rule, r[0])
+		}
+	}
+}
 
 func TestAsciiNormalizer(t *testing.T) {
 	chain, accts := soltest.New()
@@ -21,20 +48,14 @@ func TestAsciiNormalizer(t *testing.T) {
 	}
 	chain.Commit()
 
-	asciiRules, err := genAsciiMap()
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	var totalGas uint64
-	for _, r := range asciiRules {
+	for _, r := range rle(AsciiRules()) {
 		if !chain.Succeed(nrm.AddRules(accts[0].Auth, [1]byte{r.Rule}, big.NewInt(int64(r.Num)))) {
 			t.Fatal("can't add rule")
 		}
 		g := chain.LastGas()
 		totalGas += g
 	}
-	fmt.Printf("added %d rules, totalGas = %+v\n", len(asciiRules), totalGas) // output for debug
 
 	for _, test := range []struct {
 		domain string

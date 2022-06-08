@@ -2,8 +2,6 @@ package test
 
 import (
 	"bufio"
-	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -17,11 +15,6 @@ var (
 	asciiMap string
 )
 
-type ConsecRules struct {
-	Rule uint8
-	Num  uint64
-}
-
 const (
 	RuleValid          = "valid"
 	RuleDisallowedStd3 = "disallowed_STD3_valid"
@@ -31,10 +24,16 @@ const (
 var ruleMap = map[string]byte{
 	RuleDisallowedStd3: 0x00,
 	RuleValid:          0x01,
+	RuleMapped:         0x02,
 }
 
-func genAsciiMap() ([]ConsecRules, error) {
-	type Record struct {
+type Record struct {
+	Code rune
+	Rule byte
+}
+
+func AsciiRules() (out []Record) {
+	type record struct {
 		RangeStart string   `regexp:"^(\\s?[A-F0-9]+)+"`
 		_          struct{} `regexp:"(\\.\\.)?"`
 		RangeEnd   string   `regexp:"((\\w?[A-F0-9]+)+)?"`
@@ -44,51 +43,72 @@ func genAsciiMap() ([]ConsecRules, error) {
 		Map        string   `regexp:"([A-F0-9]+)?"`
 	}
 
-	var out []ConsecRules
-
 	sc := bufio.NewScanner(strings.NewReader(asciiMap))
 
-	var r Record
+	var r record
 	for sc.Scan() {
 		line := sc.Text()
 
 		if ok, err := restructure.Find(&r, line); err != nil {
-			return nil, err
+			panic(err)
 		} else if !ok {
-			return nil, fmt.Errorf("unable to process rule line: %s", line)
+			panic("unable to process rule line")
 		}
 
-		var n uint64 = 1
+		start, err := strconv.ParseUint(r.RangeStart, 16, 32)
+		if err != nil {
+			panic(err)
+		}
+
+		end := start
 		if r.RangeEnd != "" {
-			start, err := strconv.ParseUint(r.RangeStart, 16, 32)
+			end, err = strconv.ParseUint(r.RangeEnd, 16, 32)
 			if err != nil {
-				return nil, err
+				panic(err)
 			}
-			end, err := strconv.ParseUint(r.RangeEnd, 16, 32)
-			if err != nil {
-				return nil, err
-			}
-			n = end - start + 1
 		}
 
-		switch r.Rule {
-		case RuleMapped:
-			if n != 1 {
-				return nil, errors.New("invalid rule")
+		for code := start; code <= end; code++ {
+			rule, ok := ruleMap[r.Rule]
+			if !ok {
+				panic("unknown rule")
 			}
-			mapped, err := strconv.ParseUint(r.Map, 16, 8)
-			if err != nil {
-				return nil, err
+			if r.Rule == RuleMapped {
+				mapped, err := strconv.ParseUint(r.Map, 16, 8)
+				if err != nil {
+					panic(err)
+				}
+				rule = byte(mapped)
 			}
-			out = append(out, ConsecRules{uint8(mapped), 1})
-		case RuleDisallowedStd3:
-			fallthrough
-		case RuleValid:
-			out = append(out, ConsecRules{ruleMap[r.Rule], n})
-		default:
-			return nil, fmt.Errorf("unknown rule: %s", r.Rule)
+			out = append(out, Record{rune(code), rule})
 		}
 	}
 
-	return out, nil
+	return out
+}
+
+type RLERule struct {
+	Rule byte
+	Num  uint64
+}
+
+// run-length encoding of records
+func rle(records []Record) (out []RLERule) {
+	var cur RLERule
+	for _, r := range records {
+		if r.Rule == cur.Rule {
+			cur.Num++
+			continue
+		}
+		if cur.Num > 0 {
+			out = append(out, cur)
+		}
+		cur.Rule = r.Rule
+		cur.Num = 1
+	}
+
+	if cur.Num > 0 {
+		out = append(out, cur)
+	}
+	return
 }

@@ -20,7 +20,7 @@ contract AsciiNormalizer {
 	//  0x01: sendtinel value for VALID
 	//  other: mapped value
 	// TODO inspect actual memory?
-	bytes1[] idnamap;
+	bytes1[] public idnamap;
 
 	// TODO only owner
 	function addRules(bytes1 r, uint256 num) external {
