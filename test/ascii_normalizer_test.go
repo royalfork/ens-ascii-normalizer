@@ -3,7 +3,6 @@ package test
 import (
 	"bytes"
 	"encoding/hex"
-	"fmt"
 	"math/big"
 	"strings"
 	"testing"
@@ -35,10 +34,10 @@ func TestENSOwner(t *testing.T) {
 	domain := label + ".eth"
 
 	// Ensure lookup fails before name is registered.
-	if out, err := nrm.Lookup(&bind.CallOpts{}, domain); err != nil {
+	if out, err := nrm.Owner(&bind.CallOpts{}, domain); err != nil {
 		t.Fatal(err)
-	} else if out.Owner != (common.Address{}) {
-		t.Errorf("want owner: 0x0, got: %s", out.Owner)
+	} else if out.DomainOwner != (common.Address{}) {
+		t.Errorf("want owner: 0x0, got: %s", out.DomainOwner)
 	}
 
 	node, err := ens.RegisterETHDomain(accts[1].Addr, label)
@@ -46,22 +45,22 @@ func TestENSOwner(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, hash, err := nrm.Namehash(&bind.CallOpts{}, domain)
+	nh, err := nrm.Namehash(&bind.CallOpts{}, domain)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if node != hash {
-		t.Errorf("namehashes don't match: go/enstest = %x, AsciiNormalizer.sol = %s", node, hash)
+	if node != nh.Node {
+		t.Errorf("namehashes don't match: go/enstest = %x, AsciiNormalizer.sol = %s", node, nh.Node)
 	}
 
-	out, err := nrm.Lookup(&bind.CallOpts{}, domain)
+	out, err := nrm.Owner(&bind.CallOpts{}, domain)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if out.Owner != accts[1].Addr {
-		t.Errorf("want owner: %s, got: %s", accts[1].Addr, out.Owner)
+	if out.DomainOwner != accts[1].Addr {
+		t.Errorf("want owner: %s, got: %s", accts[1].Addr, out.DomainOwner)
 	}
 	if out.Node != node {
 		t.Errorf("want nodehash: %x, got: %x", node, out.Node)
@@ -132,7 +131,7 @@ func TestAsciiNormalizer(t *testing.T) {
 				t.Errorf("want labelhash: %x, got: %x", labelHash, lh)
 			}
 
-			normal, node, err := nrm.Namehash(&bind.CallOpts{}, test.domain)
+			nh, err := nrm.Namehash(&bind.CallOpts{}, test.domain)
 			if err != nil {
 				if !test.valid {
 					// revert is expected
@@ -140,16 +139,16 @@ func TestAsciiNormalizer(t *testing.T) {
 				}
 				t.Fatal(err)
 			}
-			if normal != test.normal {
-				t.Errorf("want normal: %s, got: %s", test.normal, normal)
+			if nh.Normalized != test.normal {
+				t.Errorf("want normal: %s, got: %s", test.normal, nh.Normalized)
 			}
 
 			testNode, err := hex.DecodeString(test.nodeHx)
 			if err != nil {
 				t.Fatal(err)
 			}
-			if !bytes.Equal(node[:], testNode) {
-				t.Errorf("want node: %x, got: %x", testNode, node[:])
+			if !bytes.Equal(nh.Node[:], testNode) {
+				t.Errorf("want node: %x, got: %x", testNode, nh.Node[:])
 			}
 		})
 	}

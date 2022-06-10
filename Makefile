@@ -3,7 +3,7 @@ all: generate
 
 .PHONY: generate
 generate:
-	@abigen --sol ./contracts/AsciiNormalizer.sol --pkg bindings --out ./bindings/AsciiNormalizer.go
+	@abigen --sol ./contracts/ENSAsciiNormalizer.sol --pkg bindings --out ./bindings/ENSAsciiNormalizer.go
 
 .PHONY: test
 test: generate

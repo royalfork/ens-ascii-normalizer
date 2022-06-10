@@ -5,13 +5,18 @@ interface ENS {
     function owner(bytes32 node) external view returns (address);
 }
 
+/**
+ * @title ENSAsciiNormalizer
+ * @author royalfork.eth
+ * @notice UTS-46 normalization for ENS domains.
+ */
 contract ENSAsciiNormalizer {
 	ENS public ens;
 
 	// Each index in idnamap refers to an ascii code point.
 	// If idnamap[char] > 2, char maps to a valid ascii character.
-	// Otherwise, idna[char] tells whether char is valid within
-	// an ENS domain.
+	// Otherwise, idna[char] returns Rule.DISALLOWED or
+	// Rule.VALID.
 	bytes1[] public idnamap;
 	enum Rule { DISALLOWED, VALID }
 
@@ -25,12 +30,25 @@ contract ENSAsciiNormalizer {
 		}
 	}
 
-	function lookup(string memory domain) external view returns (address owner, bytes32 node) {
+    /**
+     * @notice Find ENS owner of domain.
+     * @param domain Domain to lookup.
+	 * @return domainOwner Owner of domain.
+	 * @return node Namehash of domain.
+	 */
+	function owner(string memory domain) external view returns (address domainOwner, bytes32 node) {
 		(,node) = namehash(domain);
-		owner = ens.owner(node);
+		return (ens.owner(node), node);
 	}
 
-	function namehash(string memory domain) public view returns (string memory, bytes32) {
+    /**
+     * @notice Compute namehash of domain after UTS-46 validation and
+     *         normalization.  Reverts if domain is invalid, or not ASCII.
+     * @param domain Domain to namehash.
+	 * @return normalized Normalized domain.
+	 * @return node Namehash of domain.
+	 */
+	function namehash(string memory domain) public view returns (string memory normalized, bytes32 node) {
 		// Process labels (in reverse order for namehash).
 		uint i = bytes(domain).length;
 		uint lastDot = i;
@@ -54,6 +72,11 @@ contract ENSAsciiNormalizer {
 		return (domain, keccak256(abi.encodePacked(node, labelhash(domain, i, lastDot))));
 	}
 
+    /**
+     * @notice Compute labelhash of label. This function does not perform validation/normalization.
+     * @param label Label to hash.
+	 * @return hash Labelhash of label.
+	 */
 	function labelhash(string memory label) external pure returns (bytes32 hash) {
 		return labelhash(label, 0, bytes(label).length);
 	}

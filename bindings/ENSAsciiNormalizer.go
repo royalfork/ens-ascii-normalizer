@@ -219,15 +219,15 @@ func (_ENS *ENSCallerSession) Owner(node [32]byte) (common.Address, error) {
 
 // ENSAsciiNormalizerMetaData contains all meta data concerning the ENSAsciiNormalizer contract.
 var ENSAsciiNormalizerMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"contractENS\",\"name\":\"_ens\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"asciimap\",\"type\":\"bytes\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"ens\",\"outputs\":[{\"internalType\":\"contractENS\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"idnamap\",\"outputs\":[{\"internalType\":\"bytes1\",\"name\":\"\",\"type\":\"bytes1\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"label\",\"type\":\"string\"}],\"name\":\"labelhash\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"hash\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"domain\",\"type\":\"string\"}],\"name\":\"lookup\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"node\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"domain\",\"type\":\"string\"}],\"name\":\"namehash\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[{\"internalType\":\"contractENS\",\"name\":\"_ens\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"asciimap\",\"type\":\"bytes\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"ens\",\"outputs\":[{\"internalType\":\"contractENS\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"idnamap\",\"outputs\":[{\"internalType\":\"bytes1\",\"name\":\"\",\"type\":\"bytes1\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"label\",\"type\":\"string\"}],\"name\":\"labelhash\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"hash\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"domain\",\"type\":\"string\"}],\"name\":\"namehash\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"normalized\",\"type\":\"string\"},{\"internalType\":\"bytes32\",\"name\":\"node\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"domain\",\"type\":\"string\"}],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"domainOwner\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"node\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
 	Sigs: map[string]string{
 		"3f15457f": "ens()",
 		"0e4cdd59": "idnamap(uint256)",
 		"4d4bd71b": "labelhash(string)",
-		"f67187ac": "lookup(string)",
 		"09879962": "namehash(string)",
+		"df55b41a": "owner(string)",
 	},
-	Bin: "0x608060405234801561001057600080fd5b5060405161083f38038061083f83398101604081905261002f9161015c565b600080546001600160a01b0319166001600160a01b0384161781555b815181101561013e57600082610062836001610264565b815181106100725761007261027c565b01602001517fff0000000000000000000000000000000000000000000000000000000000000016905060005b8383815181106100b0576100b061027c565b016020015160f81c60ff8216101561012957600180548082018255600091909152602081047fb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf601805460f885901c601f9093166101000a92830260ff90930219169190911790558061012181610292565b91505061009e565b506101379050600282610264565b905061004b565b5050506102b1565b634e487b7160e01b600052604160045260246000fd5b6000806040838503121561016f57600080fd5b82516001600160a01b038116811461018657600080fd5b602084810151919350906001600160401b03808211156101a557600080fd5b818601915086601f8301126101b957600080fd5b8151818111156101cb576101cb610146565b604051601f8201601f19908116603f011681019083821181831017156101f3576101f3610146565b81604052828152898684870101111561020b57600080fd5b600093505b8284101561022d5784840186015181850187015292850192610210565b8284111561023e5760008684830101525b8096505050505050509250929050565b634e487b7160e01b600052601160045260246000fd5b600082198211156102775761027761024e565b500190565b634e487b7160e01b600052603260045260246000fd5b600060ff821660ff81036102a8576102a861024e565b60010192915050565b61057f806102c06000396000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c8063098799621461005c5780630e4cdd59146100865780633f15457f146100b25780634d4bd71b146100dd578063f67187ac14610104575b600080fd5b61006f61006a366004610398565b610136565b60405161007d929190610449565b60405180910390f35b6100996100943660046104a6565b6102cc565b6040516001600160f81b0319909116815260200161007d565b6000546100c5906001600160a01b031681565b6040516001600160a01b03909116815260200161007d565b6100f66100eb366004610398565b805160209091012090565b60405190815260200161007d565b610117610112366004610398565b610300565b604080516001600160a01b03909316835260208301919091520161007d565b805160609060009080825b821561028a576000866101556001866104d5565b81518110610165576101656104ec565b01602001516001600160f81b0319169050601760f91b8190036101cd578383036020858901012082906040805160208101939093528201526060016040516020818303038152906040528051906020012091506001846101c591906104d5565b925050610278565b600160ff1b6001600160f81b03198216106101e757600080fd5b600060018260f81c60ff1681548110610202576102026104ec565b600091825260208083209082040154601f9091166101000a900460f81b915060ff1660f882901c0361023357600080fd5b600160f882901c111561027557808861024d6001886104d5565b8151811061025d5761025d6104ec565b60200101906001600160f81b031916908160001a9053505b50505b8261028281610502565b935050610141565b82820360208488010120869082906040805160208101939093528201526060016040516020818303038152906040528051906020012094509450505050915091565b600181815481106102dc57600080fd5b9060005260206000209060209182820401919006915054906101000a900460f81b81565b60008061030c83610136565b6000546040516302571be360e01b8152600481018390529193506001600160a01b031691506302571be390602401602060405180830381865afa158015610357573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061037b9190610519565b9150915091565b634e487b7160e01b600052604160045260246000fd5b6000602082840312156103aa57600080fd5b813567ffffffffffffffff808211156103c257600080fd5b818401915084601f8301126103d657600080fd5b8135818111156103e8576103e8610382565b604051601f8201601f19908116603f0116810190838211818310171561041057610410610382565b8160405282815287602084870101111561042957600080fd5b826020860160208301376000928101602001929092525095945050505050565b604081526000835180604084015260005b81811015610477576020818701810151606086840101520161045a565b81811115610489576000606083860101525b50602083019390935250601f91909101601f191601606001919050565b6000602082840312156104b857600080fd5b5035919050565b634e487b7160e01b600052601160045260246000fd5b6000828210156104e7576104e76104bf565b500390565b634e487b7160e01b600052603260045260246000fd5b600081610511576105116104bf565b506000190190565b60006020828403121561052b57600080fd5b81516001600160a01b038116811461054257600080fd5b939250505056fea2646970667358221220a99fa62e408d4b861b9f99a5ac1c03b77b08a61359acb4e291af5e669f35496664736f6c634300080e0033",
+	Bin: "0x608060405234801561001057600080fd5b5060405161083f38038061083f83398101604081905261002f9161015c565b600080546001600160a01b0319166001600160a01b0384161781555b815181101561013e57600082610062836001610264565b815181106100725761007261027c565b01602001517fff0000000000000000000000000000000000000000000000000000000000000016905060005b8383815181106100b0576100b061027c565b016020015160f81c60ff8216101561012957600180548082018255600091909152602081047fb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf601805460f885901c601f9093166101000a92830260ff90930219169190911790558061012181610292565b91505061009e565b506101379050600282610264565b905061004b565b5050506102b1565b634e487b7160e01b600052604160045260246000fd5b6000806040838503121561016f57600080fd5b82516001600160a01b038116811461018657600080fd5b602084810151919350906001600160401b03808211156101a557600080fd5b818601915086601f8301126101b957600080fd5b8151818111156101cb576101cb610146565b604051601f8201601f19908116603f011681019083821181831017156101f3576101f3610146565b81604052828152898684870101111561020b57600080fd5b600093505b8284101561022d5784840186015181850187015292850192610210565b8284111561023e5760008684830101525b8096505050505050509250929050565b634e487b7160e01b600052601160045260246000fd5b600082198211156102775761027761024e565b500190565b634e487b7160e01b600052603260045260246000fd5b600060ff821660ff81036102a8576102a861024e565b60010192915050565b61057f806102c06000396000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c8063098799621461005c5780630e4cdd59146100865780633f15457f146100b25780634d4bd71b146100dd578063df55b41a14610104575b600080fd5b61006f61006a366004610398565b610136565b60405161007d929190610449565b60405180910390f35b6100996100943660046104a6565b6102cc565b6040516001600160f81b0319909116815260200161007d565b6000546100c5906001600160a01b031681565b6040516001600160a01b03909116815260200161007d565b6100f66100eb366004610398565b805160209091012090565b60405190815260200161007d565b610117610112366004610398565b610300565b604080516001600160a01b03909316835260208301919091520161007d565b805160609060009080825b821561028a576000866101556001866104d5565b81518110610165576101656104ec565b01602001516001600160f81b0319169050601760f91b8190036101cd578383036020858901012082906040805160208101939093528201526060016040516020818303038152906040528051906020012091506001846101c591906104d5565b925050610278565b600160ff1b6001600160f81b03198216106101e757600080fd5b600060018260f81c60ff1681548110610202576102026104ec565b600091825260208083209082040154601f9091166101000a900460f81b915060ff1660f882901c0361023357600080fd5b600160f882901c111561027557808861024d6001886104d5565b8151811061025d5761025d6104ec565b60200101906001600160f81b031916908160001a9053505b50505b8261028281610502565b935050610141565b82820360208488010120869082906040805160208101939093528201526060016040516020818303038152906040528051906020012094509450505050915091565b600181815481106102dc57600080fd5b9060005260206000209060209182820401919006915054906101000a900460f81b81565b60008061030c83610136565b6000546040516302571be360e01b8152600481018390529193506001600160a01b031691506302571be390602401602060405180830381865afa158015610357573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061037b9190610519565b9150915091565b634e487b7160e01b600052604160045260246000fd5b6000602082840312156103aa57600080fd5b813567ffffffffffffffff808211156103c257600080fd5b818401915084601f8301126103d657600080fd5b8135818111156103e8576103e8610382565b604051601f8201601f19908116603f0116810190838211818310171561041057610410610382565b8160405282815287602084870101111561042957600080fd5b826020860160208301376000928101602001929092525095945050505050565b604081526000835180604084015260005b81811015610477576020818701810151606086840101520161045a565b81811115610489576000606083860101525b50602083019390935250601f91909101601f191601606001919050565b6000602082840312156104b857600080fd5b5035919050565b634e487b7160e01b600052601160045260246000fd5b6000828210156104e7576104e76104bf565b500390565b634e487b7160e01b600052603260045260246000fd5b600081610511576105116104bf565b506000190190565b60006020828403121561052b57600080fd5b81516001600160a01b038116811461054257600080fd5b939250505056fea26469706673582212202aa4028b92b137efc05a577cbec87c86677261ba7ecc2b9040244a4358e3f11164736f6c634300080e0033",
 }
 
 // ENSAsciiNormalizerABI is the input ABI used to generate the binding from.
@@ -494,79 +494,92 @@ func (_ENSAsciiNormalizer *ENSAsciiNormalizerCallerSession) Labelhash(label stri
 	return _ENSAsciiNormalizer.Contract.Labelhash(&_ENSAsciiNormalizer.CallOpts, label)
 }
 
-// Lookup is a free data retrieval call binding the contract method 0xf67187ac.
+// Namehash is a free data retrieval call binding the contract method 0x09879962.
 //
-// Solidity: function lookup(string domain) view returns(address owner, bytes32 node)
-func (_ENSAsciiNormalizer *ENSAsciiNormalizerCaller) Lookup(opts *bind.CallOpts, domain string) (struct {
-	Owner common.Address
-	Node  [32]byte
+// Solidity: function namehash(string domain) view returns(string normalized, bytes32 node)
+func (_ENSAsciiNormalizer *ENSAsciiNormalizerCaller) Namehash(opts *bind.CallOpts, domain string) (struct {
+	Normalized string
+	Node       [32]byte
 }, error) {
 	var out []interface{}
-	err := _ENSAsciiNormalizer.contract.Call(opts, &out, "lookup", domain)
+	err := _ENSAsciiNormalizer.contract.Call(opts, &out, "namehash", domain)
 
 	outstruct := new(struct {
-		Owner common.Address
-		Node  [32]byte
+		Normalized string
+		Node       [32]byte
 	})
 	if err != nil {
 		return *outstruct, err
 	}
 
-	outstruct.Owner = *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+	outstruct.Normalized = *abi.ConvertType(out[0], new(string)).(*string)
 	outstruct.Node = *abi.ConvertType(out[1], new([32]byte)).(*[32]byte)
 
 	return *outstruct, err
 
 }
 
-// Lookup is a free data retrieval call binding the contract method 0xf67187ac.
+// Namehash is a free data retrieval call binding the contract method 0x09879962.
 //
-// Solidity: function lookup(string domain) view returns(address owner, bytes32 node)
-func (_ENSAsciiNormalizer *ENSAsciiNormalizerSession) Lookup(domain string) (struct {
-	Owner common.Address
-	Node  [32]byte
+// Solidity: function namehash(string domain) view returns(string normalized, bytes32 node)
+func (_ENSAsciiNormalizer *ENSAsciiNormalizerSession) Namehash(domain string) (struct {
+	Normalized string
+	Node       [32]byte
 }, error) {
-	return _ENSAsciiNormalizer.Contract.Lookup(&_ENSAsciiNormalizer.CallOpts, domain)
-}
-
-// Lookup is a free data retrieval call binding the contract method 0xf67187ac.
-//
-// Solidity: function lookup(string domain) view returns(address owner, bytes32 node)
-func (_ENSAsciiNormalizer *ENSAsciiNormalizerCallerSession) Lookup(domain string) (struct {
-	Owner common.Address
-	Node  [32]byte
-}, error) {
-	return _ENSAsciiNormalizer.Contract.Lookup(&_ENSAsciiNormalizer.CallOpts, domain)
+	return _ENSAsciiNormalizer.Contract.Namehash(&_ENSAsciiNormalizer.CallOpts, domain)
 }
 
 // Namehash is a free data retrieval call binding the contract method 0x09879962.
 //
-// Solidity: function namehash(string domain) view returns(string, bytes32)
-func (_ENSAsciiNormalizer *ENSAsciiNormalizerCaller) Namehash(opts *bind.CallOpts, domain string) (string, [32]byte, error) {
-	var out []interface{}
-	err := _ENSAsciiNormalizer.contract.Call(opts, &out, "namehash", domain)
+// Solidity: function namehash(string domain) view returns(string normalized, bytes32 node)
+func (_ENSAsciiNormalizer *ENSAsciiNormalizerCallerSession) Namehash(domain string) (struct {
+	Normalized string
+	Node       [32]byte
+}, error) {
+	return _ENSAsciiNormalizer.Contract.Namehash(&_ENSAsciiNormalizer.CallOpts, domain)
+}
 
+// Owner is a free data retrieval call binding the contract method 0xdf55b41a.
+//
+// Solidity: function owner(string domain) view returns(address domainOwner, bytes32 node)
+func (_ENSAsciiNormalizer *ENSAsciiNormalizerCaller) Owner(opts *bind.CallOpts, domain string) (struct {
+	DomainOwner common.Address
+	Node        [32]byte
+}, error) {
+	var out []interface{}
+	err := _ENSAsciiNormalizer.contract.Call(opts, &out, "owner", domain)
+
+	outstruct := new(struct {
+		DomainOwner common.Address
+		Node        [32]byte
+	})
 	if err != nil {
-		return *new(string), *new([32]byte), err
+		return *outstruct, err
 	}
 
-	out0 := *abi.ConvertType(out[0], new(string)).(*string)
-	out1 := *abi.ConvertType(out[1], new([32]byte)).(*[32]byte)
+	outstruct.DomainOwner = *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+	outstruct.Node = *abi.ConvertType(out[1], new([32]byte)).(*[32]byte)
 
-	return out0, out1, err
+	return *outstruct, err
 
 }
 
-// Namehash is a free data retrieval call binding the contract method 0x09879962.
+// Owner is a free data retrieval call binding the contract method 0xdf55b41a.
 //
-// Solidity: function namehash(string domain) view returns(string, bytes32)
-func (_ENSAsciiNormalizer *ENSAsciiNormalizerSession) Namehash(domain string) (string, [32]byte, error) {
-	return _ENSAsciiNormalizer.Contract.Namehash(&_ENSAsciiNormalizer.CallOpts, domain)
+// Solidity: function owner(string domain) view returns(address domainOwner, bytes32 node)
+func (_ENSAsciiNormalizer *ENSAsciiNormalizerSession) Owner(domain string) (struct {
+	DomainOwner common.Address
+	Node        [32]byte
+}, error) {
+	return _ENSAsciiNormalizer.Contract.Owner(&_ENSAsciiNormalizer.CallOpts, domain)
 }
 
-// Namehash is a free data retrieval call binding the contract method 0x09879962.
+// Owner is a free data retrieval call binding the contract method 0xdf55b41a.
 //
-// Solidity: function namehash(string domain) view returns(string, bytes32)
-func (_ENSAsciiNormalizer *ENSAsciiNormalizerCallerSession) Namehash(domain string) (string, [32]byte, error) {
-	return _ENSAsciiNormalizer.Contract.Namehash(&_ENSAsciiNormalizer.CallOpts, domain)
+// Solidity: function owner(string domain) view returns(address domainOwner, bytes32 node)
+func (_ENSAsciiNormalizer *ENSAsciiNormalizerCallerSession) Owner(domain string) (struct {
+	DomainOwner common.Address
+	Node        [32]byte
+}, error) {
+	return _ENSAsciiNormalizer.Contract.Owner(&_ENSAsciiNormalizer.CallOpts, domain)
 }
