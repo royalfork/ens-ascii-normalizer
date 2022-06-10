@@ -22,41 +22,6 @@ contract AsciiNormalizer {
 	}
 
 	// TODO natspec docs
-	function valid(string calldata domain) external view returns (bool) {
-		for (uint256 i = 0; i < bytes(domain).length; i++) {
-			bytes1 c = bytes(domain)[i];
-			if (c == '.') {
-				continue;
-			}
-			if (c > 0x80) {
-				return false;
-			}
-			if (uint8(idnamap[uint8(c)]) != 1) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	// TODO natspec docs
-	function normalize(string memory domain) external view returns (string memory) {
-		for (uint256 i = 0; i < bytes(domain).length; i++) {
-			bytes1 c = bytes(domain)[i];
-			if (c == '.') {
-				continue;
-			}
-
-			require(c < 0x80);
-			bytes1 r = idnamap[uint8(c)];
-			require(r > 0);
-			if (uint8(r) > 1) {
-				bytes(domain)[i] = r;
-			}
-		}
-		return domain;
-	}
-
-	// TODO natspec docs
 	function namehash(string memory domain) external view returns (string memory, bytes32) {
 		uint256 i = bytes(domain).length;
 
@@ -83,7 +48,7 @@ contract AsciiNormalizer {
 	}
 
 	function labelHash(string memory domain, uint start, uint end) internal pure returns (bytes32 hash) {
-		assembly {
+		assembly ("memory-safe") {
 			hash := keccak256(add(add(domain, 0x20), start), sub(end, start))
 		}
 	}

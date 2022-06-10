@@ -65,17 +65,9 @@ func TestAsciiNormalizer(t *testing.T) {
 		{"vitalik.ETH", false, "vitalik.eth", "ee6c4522aab0003e8d14cd40a6af439055fd2577951148c14b6cea9a53475835"},
 	} {
 		t.Run(test.domain, func(t *testing.T) {
-			isValid, err := nrm.Valid(&bind.CallOpts{}, test.domain)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if isValid != test.valid {
-				t.Errorf("want valid: %t, got: %t", test.valid, isValid)
-			}
-
 			normal, node, err := nrm.Namehash(&bind.CallOpts{}, test.domain)
 			if err != nil {
-				if !isValid {
+				if !test.valid {
 					// revert is expected
 					return
 				}
@@ -91,15 +83,6 @@ func TestAsciiNormalizer(t *testing.T) {
 			}
 			if !bytes.Equal(node[:], testNode) {
 				t.Errorf("want node: %x, got: %x", testNode, node[:])
-			}
-
-			normal, err = nrm.Normalize(&bind.CallOpts{}, test.domain)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			if normal != test.normal {
-				t.Errorf("want normal: %s, got: %s", test.normal, normal)
 			}
 		})
 	}
