@@ -52,7 +52,7 @@ contract ENSAsciiNormalizer {
 		// Process labels (in reverse order for namehash).
 		uint i = bytes(domain).length;
 		uint lastDot = i;
-		bytes32 node = bytes32(0);
+		node = bytes32(0);
 		for (; i > 0; i--) {
 			bytes1 c = bytes(domain)[i-1];
 
