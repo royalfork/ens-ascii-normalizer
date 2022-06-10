@@ -1,18 +1,23 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-// TODO natspec docs
-contract AsciiNormalizer {
-	// Each index in idnamap corresponds to the ascii code point.
-	// Value at index location is either:
-	//  0x00: sendtinel value for DISALLOWED
-	//  0x01: sendtinel value for VALID
-	//  other: mapped code point
-	// Using bytes1[] allows for indexed based public access, yet
-	// storage array is still tightly packed.
-	bytes1[] public idnamap;
+interface ENS {
+    function owner(bytes32 node) external view returns (address);
+}
 
-	constructor (bytes memory asciimap) {
+// TODO natspec docs
+contract ENSAsciiNormalizer {
+	ENS public ens;
+
+	// Each index in idnamap refers to an ascii code point.
+	// If idnamap[char] > 2, char maps to a valid ascii character.
+	// Otherwise, idna[char] tells whether char is valid within
+	// an ENS domain.
+	bytes1[] public idnamap;
+	enum Rule { DISALLOWED, VALID }
+
+	constructor (ENS _ens, bytes memory asciimap) {
+		ens = _ens;
 		for(uint i = 0; i < asciimap.length; i += 2) {
 			bytes1 r = asciimap[i+1];
 			for(uint8 j = 0; j < uint8(asciimap[i]); j++) {
@@ -22,11 +27,16 @@ contract AsciiNormalizer {
 	}
 
 	// TODO natspec docs
-	function namehash(string memory domain) external view returns (string memory, bytes32) {
-		uint256 i = bytes(domain).length;
+	function lookup(string memory domain) external view returns (address owner, bytes32 node) {
+		(,node) = namehash(domain);
+		owner = ens.owner(node);
+	}
 
-		// Process labels.
-		uint256 lastDot = i;
+	// TODO natspec docs
+	function namehash(string memory domain) public view returns (string memory, bytes32) {
+		// Process labels (in reverse order for namehash).
+		uint i = bytes(domain).length;
+		uint lastDot = i;
 		bytes32 node = bytes32(0);
 		for (; i > 0; i--) {
 			bytes1 c = bytes(domain)[i-1];
@@ -39,7 +49,7 @@ contract AsciiNormalizer {
 
 			require(c < 0x80);
 			bytes1 r = idnamap[uint8(c)];
-			require(r > 0);
+			require(uint8(r) != uint8(Rule.DISALLOWED));
 			if (uint8(r) > 1) {
 				bytes(domain)[i-1] = r;
 			}

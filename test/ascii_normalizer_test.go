@@ -7,9 +7,63 @@ import (
 	"testing"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/royalfork/ens-ascii-normalizer/bindings"
+	"github.com/royalfork/ens/enstest"
 	"github.com/royalfork/soltest"
 )
+
+func TestENSOwner(t *testing.T) {
+	chain, accts := soltest.New()
+
+	// use ens to register a name
+	ens, err := enstest.New(accts[0], chain)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, _, nrm, err := bindings.DeployENSAsciiNormalizer(accts[0].Auth, chain, ens.RegistryAddr, rle(compress(AsciiRules())))
+	if err != nil {
+		t.Fatal(err)
+	}
+	chain.Commit()
+
+	label := "royalfork"
+	domain := label + ".eth"
+
+	// Ensure lookup fails before name is registered.
+	if out, err := nrm.Lookup(&bind.CallOpts{}, domain); err != nil {
+		t.Fatal(err)
+	} else if out.Owner != (common.Address{}) {
+		t.Errorf("want owner: 0x0, got: %s", out.Owner)
+	}
+
+	node, err := ens.RegisterETHDomain(accts[1].Addr, label)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, hash, err := nrm.Namehash(&bind.CallOpts{}, domain)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if node != hash {
+		t.Errorf("namehashes don't match: go/enstest = %x, AsciiNormalizer.sol = %s", node, hash)
+	}
+
+	out, err := nrm.Lookup(&bind.CallOpts{}, domain)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if out.Owner != accts[1].Addr {
+		t.Errorf("want owner: %s, got: %s", accts[1].Addr, out.Owner)
+	}
+	if out.Node != node {
+		t.Errorf("want nodehash: %x, got: %x", node, out.Node)
+	}
+}
 
 func TestAsciiMap(t *testing.T) {
 	chain, accts := soltest.New()
@@ -17,7 +71,7 @@ func TestAsciiMap(t *testing.T) {
 	rules := AsciiRules()
 	comp := compress(rules)
 
-	_, _, nrm, err := bindings.DeployAsciiNormalizer(accts[0].Auth, chain, rle(comp))
+	_, _, nrm, err := bindings.DeployENSAsciiNormalizer(accts[0].Auth, chain, common.Address{}, rle(comp))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -37,7 +91,7 @@ func TestAsciiMap(t *testing.T) {
 func TestAsciiNormalizer(t *testing.T) {
 	chain, accts := soltest.New()
 
-	_, _, nrm, err := bindings.DeployAsciiNormalizer(accts[0].Auth, chain, rle(compress(AsciiRules())))
+	_, _, nrm, err := bindings.DeployENSAsciiNormalizer(accts[0].Auth, chain, common.Address{}, rle(compress(AsciiRules())))
 	if err != nil {
 		t.Fatal(err)
 	}
