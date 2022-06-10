@@ -5,7 +5,6 @@ interface ENS {
     function owner(bytes32 node) external view returns (address);
 }
 
-// TODO natspec docs
 contract ENSAsciiNormalizer {
 	ENS public ens;
 
@@ -26,13 +25,11 @@ contract ENSAsciiNormalizer {
 		}
 	}
 
-	// TODO natspec docs
 	function lookup(string memory domain) external view returns (address owner, bytes32 node) {
 		(,node) = namehash(domain);
 		owner = ens.owner(node);
 	}
 
-	// TODO natspec docs
 	function namehash(string memory domain) public view returns (string memory, bytes32) {
 		// Process labels (in reverse order for namehash).
 		uint i = bytes(domain).length;
@@ -42,7 +39,7 @@ contract ENSAsciiNormalizer {
 			bytes1 c = bytes(domain)[i-1];
 
 			if (c == '.') {
-				node = keccak256(abi.encodePacked(node, labelHash(domain, i, lastDot)));
+				node = keccak256(abi.encodePacked(node, labelhash(domain, i, lastDot)));
 				lastDot = i-1;
 				continue;
 			}
@@ -54,10 +51,14 @@ contract ENSAsciiNormalizer {
 				bytes(domain)[i-1] = r;
 			}
 		}
-		return (domain, keccak256(abi.encodePacked(node, labelHash(domain, i, lastDot))));
+		return (domain, keccak256(abi.encodePacked(node, labelhash(domain, i, lastDot))));
 	}
 
-	function labelHash(string memory domain, uint start, uint end) internal pure returns (bytes32 hash) {
+	function labelhash(string memory label) external pure returns (bytes32 hash) {
+		return labelhash(label, 0, bytes(label).length);
+	}
+
+	function labelhash(string memory domain, uint start, uint end) internal pure returns (bytes32 hash) {
 		assembly ("memory-safe") {
 			hash := keccak256(add(add(domain, 0x20), start), sub(end, start))
 		}
