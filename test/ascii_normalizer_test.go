@@ -57,6 +57,7 @@ func TestAsciiNormalizer(t *testing.T) {
 		{"royalfork.e h", false, "", ""},
 		{"eth", true, "eth", "93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae"},
 		{"foo.eth", true, "foo.eth", "de9b09fd7c5f901e23a3f19fecc54828e9c848539801e86591bd9801b019f84f"},
+		{"alice.eth", true, "alice.eth", "787192fc5378cc32aa956ddfdedbf26b24e8d78e40109add0eea2c1a012c3dec"},
 		{"royalfork.eth", true, "royalfork.eth", "f47a153bb881860e9a4390b84b063154e9623c32a1611c73aef2038a134d8eba"},
 		{"RoyalFork.eth", false, "royalfork.eth", "f47a153bb881860e9a4390b84b063154e9623c32a1611c73aef2038a134d8eba"},
 		{"Sub.RoyalFork.Com", false, "sub.royalfork.com", "9a43d45021413ea5a0fe0fed9b94c3ff0d300694f961b5dd90daa7e71c1500fb"},
